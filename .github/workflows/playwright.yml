@@ -1,0 +1,35 @@
+name: Playwright Tests
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  test_setup:
+    name: Test setup
+    runs-on: ubuntu-latest
+    outputs:
+      preview_url: ${{ steps.waitForVercelPreviewDeployment.outputs.url }}
+    steps:
+      - name: Wait for Vercel preview deployment to be ready
+        uses: patrickedqvist/wait-for-vercel-preview@master
+        id: waitForVercelPreviewDeployment
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          max_timeout: 300
+  test:
+    needs: test_setup
+    name: Playwright tests
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '15'
+      - run: rm package.json
+      - run: npm install @playwright/test
+      - run: npx playwright install --with-deps
+      - run: npx playwright test
+        env:
+          PLAYWRIGHT_BASE_URL: ${{ needs.test_setup.outputs.preview_url }}

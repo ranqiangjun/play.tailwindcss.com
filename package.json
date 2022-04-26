@@ -5,7 +5,8 @@
     "dev": "next dev",
     "build:plugins": "if [ -f './.next/serverless/scripts/buildBuiltinPlugins.js' ]; then node ./.next/serverless/scripts/buildBuiltinPlugins.js; else node ./.next/server/scripts/buildBuiltinPlugins.js; fi",
     "build": "next build && npm run build:plugins",
-    "start": "next start"
+    "start": "next start",
+    "test": "playwright test"
   },
   "dependencies": {
     "@ctrl/tinycolor": "^3.1.4",
@@ -64,5 +65,8 @@
     "tailwindcss-v2": "npm:tailwindcss@2.2.19",
     "vscode-languageserver-textdocument": "^1.0.1",
     "worker-loader": "^3.0.8"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.21.1"
   }
 }

@@ -80,7 +80,7 @@ export async function getDefaultContent() {
       content: [{ raw: html }],
     }),
     autoprefixer(),
-    cssnano(),
+    cssnano({ preset: ['default', { discardComments: { removeAll: true } }] }),
   ]).process(css, {
     from: undefined,
   })
