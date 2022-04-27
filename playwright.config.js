@@ -1,7 +1,22 @@
 const path = require('path')
+const { devices } = require('@playwright/test')
 
 module.exports = {
   testDir: path.join(__dirname, 'tests'),
+  projects: [
+    {
+      name: 'chrome',
+      use: { ...devices['Desktop Chrome'] },
+    },
+    {
+      name: 'firefox',
+      use: { ...devices['Desktop Firefox'] },
+    },
+    {
+      name: 'webkit',
+      use: { ...devices['Desktop Safari'] },
+    },
+  ],
   ...(process.env.PLAYWRIGHT_BASE_URL
     ? {
         use: {
