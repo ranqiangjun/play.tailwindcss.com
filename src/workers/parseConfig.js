@@ -115,5 +115,5 @@ export async function parseConfig(configStr, tailwindVersion) {
     }
   }
 
-  return mod.exports
+  return mod.exports || {}
 }
