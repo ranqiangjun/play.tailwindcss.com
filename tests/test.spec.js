@@ -1,5 +1,7 @@
 const { test, expect } = require('@playwright/test')
 
+test.describe.configure({ mode: 'parallel' })
+
 async function initialBuild(page) {
   let iframe = page.frameLocator('iframe')
   let stylesheet = iframe.locator('#_style')
