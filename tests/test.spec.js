@@ -1,15 +1,7 @@
 const { test, expect } = require('@playwright/test')
+const utils = require('./utils')
 
 test.describe.configure({ mode: 'parallel' })
-
-async function initialBuild(page) {
-  let iframe = page.frameLocator('iframe')
-  let stylesheet = iframe.locator('#_style')
-  await expect(stylesheet).toContainText('/* ! tailwindcss v', {
-    timeout: 12000,
-  })
-  return { iframe }
-}
 
 test('should load', async ({ page }) => {
   await page.goto('/')
@@ -19,7 +11,7 @@ test('should load', async ({ page }) => {
 test('should render the default content', async ({ page }) => {
   await page.goto('/')
 
-  await initialBuild(page)
+  await utils.initialBuild(page)
 
   let iframe = page.frameLocator('iframe')
   let stylesheet = iframe.locator('#_style')
@@ -49,9 +41,9 @@ test('should update the preview when editing HTML', async ({
 }) => {
   await page.goto('/')
 
-  let { iframe } = await initialBuild(page)
+  let { iframe } = await utils.initialBuild(page)
 
-  await editTab(
+  await utils.editTab(
     page,
     browserName,
     'HTML',
@@ -71,9 +63,9 @@ test('should update the preview when editing CSS', async ({
 }) => {
   await page.goto('/')
 
-  let { iframe } = await initialBuild(page)
+  let { iframe } = await utils.initialBuild(page)
 
-  await editTab(page, browserName, 'CSS', 'body { background: red; }')
+  await utils.editTab(page, browserName, 'CSS', 'body { background: red; }')
 
   await expect(iframe.locator('body')).toHaveCSS(
     'background-color',
@@ -81,24 +73,15 @@ test('should update the preview when editing CSS', async ({
   )
 })
 
-async function editTab(page, browserName, tab, content) {
-  await page.locator(`button:text-is("${tab}")`).click()
-  await page.locator('.monaco-scrollable-element').first().click()
-  let modifier = browserName === 'webkit' ? 'Meta' : 'Control'
-  await page.keyboard.press(`${modifier}+A`)
-  await page.keyboard.press('Backspace')
-  await page.keyboard.type(content)
-}
-
 test('should update the preview when editing config', async ({
   page,
   browserName,
 }) => {
   await page.goto('/')
 
-  let { iframe } = await initialBuild(page)
+  let { iframe } = await utils.initialBuild(page)
 
-  await editTab(
+  await utils.editTab(
     page,
     browserName,
     'Config',
@@ -114,9 +97,9 @@ test('should update the preview when editing config', async ({
 test('should tidy HTML', async ({ page, browserName }) => {
   await page.goto('/')
 
-  await initialBuild(page)
+  await utils.initialBuild(page)
 
-  await editTab(
+  await utils.editTab(
     page,
     browserName,
     'HTML',
@@ -135,9 +118,9 @@ test('should tidy HTML', async ({ page, browserName }) => {
 test('should tidy CSS', async ({ page, browserName }) => {
   await page.goto('/')
 
-  await initialBuild(page)
+  await utils.initialBuild(page)
 
-  await editTab(page, browserName, 'CSS', 'body    {  color: red;   }')
+  await utils.editTab(page, browserName, 'CSS', 'body    {  color: red;   }')
 
   await page.locator('button:text-is("Tidy")').click()
 
@@ -151,9 +134,9 @@ test('should tidy CSS', async ({ page, browserName }) => {
 test('should tidy config', async ({ page, browserName }) => {
   await page.goto('/')
 
-  await initialBuild(page)
+  await utils.initialBuild(page)
 
-  await editTab(
+  await utils.editTab(
     page,
     browserName,
     'Config',
