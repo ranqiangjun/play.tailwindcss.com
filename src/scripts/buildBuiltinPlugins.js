@@ -16,6 +16,10 @@ const versions = {
     tailwindcss: 'tailwindcss',
     plugins: PLUGINS[3],
   },
+  v0: {
+    tailwindcss: 'tailwindcss-insiders',
+    plugins: PLUGINS[3],
+  },
 }
 
 Object.keys(versions).forEach((tailwindVersion) => {

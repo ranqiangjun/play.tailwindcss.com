@@ -5,6 +5,7 @@ import colors3 from 'tailwindcss/colors'
 let colors = {
   2: colors2,
   3: colors3,
+  0: colors3,
 }
 
 export async function parseConfig(configStr, tailwindVersion) {
