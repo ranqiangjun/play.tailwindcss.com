@@ -7,17 +7,20 @@ let plugins = {
   '@tailwindcss/aspect-ratio': require('@tailwindcss/aspect-ratio/package.json?fields=version,main'),
 }
 
+let v3Plugins = {
+  ...plugins,
+  '@tailwindcss/forms': require('@tailwindcss/forms-next/package.json?fields=version,main'),
+  '@tailwindcss/typography': require('@tailwindcss/typography-next/package.json?fields=version,main'),
+}
+
 module.exports = {
-  PLUGIN_BUILDER_VERSION: '5',
+  PLUGIN_BUILDER_VERSION: '6',
   VIRTUAL_SOURCE_PATH: '/sourcePath',
   VIRTUAL_HTML_FILENAME: '/htmlInput',
   PLUGINS: {
     1: plugins,
     2: plugins,
-    3: {
-      ...plugins,
-      '@tailwindcss/forms': require('@tailwindcss/forms-next/package.json?fields=version,main'),
-      '@tailwindcss/typography': require('@tailwindcss/typography-next/package.json?fields=version,main'),
-    },
+    3: v3Plugins,
+    insiders: v3Plugins,
   },
 }

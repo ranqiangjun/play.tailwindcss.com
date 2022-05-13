@@ -23,7 +23,7 @@ const deps = {
     () => import('tailwindcss/lib/featureFlags'),
     () => import('tailwindcss/resolveConfig'),
   ],
-  0: [
+  insiders: [
     () => import('tailwindcss-insiders'),
     () => import('postcss'),
     () => import('autoprefixer'),
@@ -70,7 +70,7 @@ export async function processCss(
   tailwindVersion = '2',
   skipIntelliSense = false
 ) {
-  let isV3 = tailwindVersion === '3' || tailwindVersion === '0'
+  let isV3 = tailwindVersion === '3' || tailwindVersion === 'insiders'
   let jit = false
   const config = klona(configInput)
   const [tailwindcss, postcss, autoprefixer, featureFlags, resolveConfig] = (
@@ -113,7 +113,7 @@ export async function processCss(
       )
     }
 
-    if (tailwindVersion === '0') {
+    if (tailwindVersion === 'insiders') {
       return require('tailwindcss-insiders/lib/lib/expandApplyAtRules').default(
         jitContext
       )

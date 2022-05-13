@@ -32,28 +32,28 @@ const deps = {
   generateRules: {
     2: () => import('tailwindcss-v2/lib/jit/lib/generateRules'),
     3: () => import('tailwindcss/lib/lib/generateRules'),
-    0: () => import('tailwindcss-insiders/lib/lib/generateRules'),
+    insiders: () => import('tailwindcss-insiders/lib/lib/generateRules'),
   },
   setupContextUtils: {
     2: () => import('tailwindcss-v2/lib/jit/lib/setupContextUtils'),
     3: () => import('tailwindcss/lib/lib/setupContextUtils'),
-    0: () => import('tailwindcss-insiders/lib/lib/setupContextUtils'),
+    insiders: () => import('tailwindcss-insiders/lib/lib/setupContextUtils'),
   },
   expandApplyAtRules: {
     2: () => import('tailwindcss-v2/lib/jit/lib/expandApplyAtRules'),
     3: () => import('tailwindcss/lib/lib/expandApplyAtRules'),
-    0: () => import('tailwindcss-insiders/lib/lib/expandApplyAtRules'),
+    insiders: () => import('tailwindcss-insiders/lib/lib/expandApplyAtRules'),
   },
   resolveConfig: {
     1: () => import('tailwindcss-v1/resolveConfig'),
     2: () => import('tailwindcss-v2/resolveConfig'),
     3: () => import('tailwindcss/resolveConfig'),
-    0: () => import('tailwindcss-insiders/resolveConfig'),
+    insiders: () => import('tailwindcss-insiders/resolveConfig'),
   },
   setupTrackingContext: {
     2: () => import('tailwindcss-v2/lib/jit/lib/setupTrackingContext'),
     3: () => import('tailwindcss/lib/lib/setupTrackingContext'),
-    0: () => import('tailwindcss-insiders/lib/lib/setupTrackingContext'),
+    insiders: () => import('tailwindcss-insiders/lib/lib/setupTrackingContext'),
   },
 }
 
