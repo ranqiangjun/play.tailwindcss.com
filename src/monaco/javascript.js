@@ -7,6 +7,9 @@ import {
 import types1 from '!!raw-loader!../monaco/types.d.ts'
 import types2 from '!!raw-loader!../monaco/types-v2.d.ts'
 import types3 from '!!raw-loader!../monaco/types-v3.d.ts'
+import typesInsiders from '!!raw-loader!tailwindcss-insiders/types/config.d.ts'
+import typesInsidersCorePluginList from '!!raw-loader!tailwindcss-insiders/types/generated/CorePluginList.d.ts'
+import typesInsidersColors from '!!raw-loader!tailwindcss-insiders/types/generated/colors.d.ts'
 import postcssTypes from '!!raw-loader!string-replace-loader?search=\\/\\*.*?\\*\\/&replace=&flags=sg!../../node_modules/postcss/lib/postcss.d.ts'
 import sourcemapTypes from '!!raw-loader!source-map-js/source-map.d.ts'
 
@@ -14,9 +17,18 @@ const CONFIG_URI = 'file:///Config'
 const CONFIG_PROXY_URI = 'file:///Config.proxy'
 
 const types = {
-  1: types1,
-  2: types2,
-  3: types3,
+  1: { 'index.d.ts': types1 },
+  2: { 'index.d.ts': types2 },
+  3: { 'index.d.ts': types3 },
+  insiders: {
+    // Remove the `content` field
+    'index.d.ts': typesInsiders.replace(
+      /interface RequiredConfig \{.*?\}/s,
+      'interface RequiredConfig {}'
+    ),
+    'generated/CorePluginList.d.ts': typesInsidersCorePluginList,
+    'generated/colors.d.ts': typesInsidersColors,
+  },
 }
 
 export function setupJavaScriptMode(
@@ -28,6 +40,17 @@ export function setupJavaScriptMode(
   const disposables = []
   let model
   let tailwindVersion = initialTailwindVersion
+
+  function registerTypes(version) {
+    for (let file in types[version]) {
+      disposables.push(
+        monaco.languages.typescript.javascriptDefaults.addExtraLib(
+          types[version][file],
+          `file:///node_modules/@types/tailwindcss/${file}`
+        )
+      )
+    }
+  }
 
   return {
     getModel: () => model,
@@ -106,22 +129,21 @@ export function setupJavaScriptMode(
           )
         )
 
-        disposables.push(
-          monaco.languages.typescript.javascriptDefaults.addExtraLib(
-            types[tailwindVersion],
-            'file:///node_modules/@types/tailwindcss/index.d.ts'
-          )
-        )
+        registerTypes(tailwindVersion)
 
         disposables.push(
           monaco.languages.typescript.javascriptDefaults.addExtraLib(
             `
-              import { TailwindConfig, PluginCreator } from 'tailwindcss';
-              function createPlugin (plugin: PluginCreator, config?: TailwindConfig): {
-                handler: PluginCreator,
-                config: TailwindConfig
-              };
-              export = createPlugin;
+              import type { Config, PluginCreator } from 'tailwindcss'
+              type Plugin = {
+                withOptions<T>(
+                  plugin: (options: T) => PluginCreator,
+                  config?: (options: T) => Config
+                ): { (options: T): { handler: PluginCreator; config?: Config }; __isOptionsFunction: true }
+                (plugin: PluginCreator, config?: Config): { handler: PluginCreator; config?: Config }
+              }
+              declare const plugin: Plugin
+              export = plugin
             `,
             'file:///node_modules/@types/tailwindcss/plugin.d.ts'
           )
@@ -241,12 +263,7 @@ export function setupJavaScriptMode(
     setTailwindVersion(newTailwindVersion) {
       tailwindVersion = newTailwindVersion
       if (model) {
-        disposables.push(
-          monaco.languages.typescript.javascriptDefaults.addExtraLib(
-            types[tailwindVersion],
-            'file:///node_modules/@types/tailwindcss/index.d.ts'
-          )
-        )
+        registerTypes(tailwindVersion)
       }
     },
   }
@@ -271,7 +288,7 @@ function addTypeAnnotationToJs(js) {
   return (
     js.replace(
       /^(\s*)module\.exports(\s*=)/m,
-      '$1/** @type {import("tailwindcss").TailwindConfig} */\nconst _exports$2'
+      '$1/** @type {import("tailwindcss").Config} */\nconst _exports$2'
     ) + '\n;_exports' // prevent "_exports is declared but its value is never read."
   )
 }

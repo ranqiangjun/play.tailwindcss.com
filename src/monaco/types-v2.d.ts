@@ -232,7 +232,7 @@ type VariantConfig =
     }>;
 type PluginAPI = {
   // Get access to the whole config
-  config: <TDefaultValue = TailwindConfig>(
+  config: <TDefaultValue = Config>(
     path?: ConfigDotNotationPath,
     defaultValue?: TDefaultValue
   ) => TDefaultValue; // TODO: Or return value at path
@@ -281,12 +281,12 @@ type PluginAPI = {
   postcss: typeof postcss;
 };
 export type PluginCreator = (api: PluginAPI) => void;
-type PluginsConfig = (PluginCreator | { handler: PluginCreator, config?: TailwindConfig })[];
+type PluginsConfig = (PluginCreator | { handler: PluginCreator, config?: Config })[];
 
 // The holy grail Tailwind config definition
-export type TailwindConfig = Partial<
+export type Config = Partial<
   BaseConfig & {
-    presets: TailwindConfig[];
+    presets: Config[];
     future: FutureConfig;
     experimental: ExperimentalConfig;
     purge: PurgeConfig;
