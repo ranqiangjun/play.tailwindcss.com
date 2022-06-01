@@ -7,7 +7,7 @@ import tailwind3 from 'tailwindcss/package.json?fields=version'
 import { Listbox } from '@headlessui/react'
 
 const versions = {
-  insiders: 'Insiders',
+  // insiders: 'Insiders',
   1: `v${tailwind1.version}`,
   2: `v${tailwind2.version}`,
   3: `v${tailwind3.version}`,
