@@ -7,7 +7,7 @@ import {
 import types1 from '!!raw-loader!../monaco/types.d.ts'
 import types2 from '!!raw-loader!../monaco/types-v2.d.ts'
 import typesInsiders from '!!raw-loader!tailwindcss-insiders/types/config.d.ts'
-import typesInsidersCorePluginList from '!!raw-loader!tailwindcss-insiders/types/generated/CorePluginList.d.ts'
+import typesInsidersCorePluginList from '!!raw-loader!tailwindcss-insiders/types/generated/corePluginList.d.ts'
 import typesInsidersColors from '!!raw-loader!tailwindcss-insiders/types/generated/colors.d.ts'
 import postcssTypes from '!!raw-loader!string-replace-loader?search=\\/\\*.*?\\*\\/&replace=&flags=sg!../../node_modules/postcss/lib/postcss.d.ts'
 import sourcemapTypes from '!!raw-loader!source-map-js/source-map.d.ts'
@@ -15,7 +15,7 @@ import sourcemapTypes from '!!raw-loader!source-map-js/source-map.d.ts'
 import types3 from '!!raw-loader!../monaco/types-v3.d.ts'
 // when v3 has types _replace_ the above line with:
 // import types3 from '!!raw-loader!tailwindcss/types/config.d.ts'
-// import types3CorePluginList from '!!raw-loader!tailwindcss/types/generated/CorePluginList.d.ts'
+// import types3CorePluginList from '!!raw-loader!tailwindcss/types/generated/corePluginList.d.ts'
 // import types3Colors from '!!raw-loader!tailwindcss/types/generated/colors.d.ts'
 
 const CONFIG_URI = 'file:///Config'
@@ -32,7 +32,7 @@ const types = {
   //     /interface RequiredConfig \{.*?\}/s,
   //     'interface RequiredConfig {}'
   //   ),
-  //   'generated/CorePluginList.d.ts': types3CorePluginList,
+  //   'generated/corePluginList.d.ts': types3CorePluginList,
   //   'generated/colors.d.ts': types3Colors,
   // },
   insiders: {
@@ -41,7 +41,7 @@ const types = {
       /interface RequiredConfig \{.*?\}/s,
       'interface RequiredConfig {}'
     ),
-    'generated/CorePluginList.d.ts': typesInsidersCorePluginList,
+    'generated/corePluginList.d.ts': typesInsidersCorePluginList,
     'generated/colors.d.ts': typesInsidersColors,
   },
 }
