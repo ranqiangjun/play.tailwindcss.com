@@ -6,12 +6,17 @@ import {
 } from 'monaco-editor/esm/vs/language/typescript/tsMode'
 import types1 from '!!raw-loader!../monaco/types.d.ts'
 import types2 from '!!raw-loader!../monaco/types-v2.d.ts'
-import types3 from '!!raw-loader!../monaco/types-v3.d.ts'
 import typesInsiders from '!!raw-loader!tailwindcss-insiders/types/config.d.ts'
 import typesInsidersCorePluginList from '!!raw-loader!tailwindcss-insiders/types/generated/CorePluginList.d.ts'
 import typesInsidersColors from '!!raw-loader!tailwindcss-insiders/types/generated/colors.d.ts'
 import postcssTypes from '!!raw-loader!string-replace-loader?search=\\/\\*.*?\\*\\/&replace=&flags=sg!../../node_modules/postcss/lib/postcss.d.ts'
 import sourcemapTypes from '!!raw-loader!source-map-js/source-map.d.ts'
+
+import types3 from '!!raw-loader!../monaco/types-v3.d.ts'
+// when v3 has types _replace_ the above line with:
+// import types3 from '!!raw-loader!tailwindcss/types/config.d.ts'
+// import types3CorePluginList from '!!raw-loader!tailwindcss/types/generated/CorePluginList.d.ts'
+// import types3Colors from '!!raw-loader!tailwindcss/types/generated/colors.d.ts'
 
 const CONFIG_URI = 'file:///Config'
 const CONFIG_PROXY_URI = 'file:///Config.proxy'
@@ -20,6 +25,16 @@ const types = {
   1: { 'index.d.ts': types1 },
   2: { 'index.d.ts': types2 },
   3: { 'index.d.ts': types3 },
+  // when v3 has types _replace_ the above line with:
+  // 3: {
+  //   // Remove the `content` field
+  //   'index.d.ts': types3.replace(
+  //     /interface RequiredConfig \{.*?\}/s,
+  //     'interface RequiredConfig {}'
+  //   ),
+  //   'generated/CorePluginList.d.ts': types3CorePluginList,
+  //   'generated/colors.d.ts': types3Colors,
+  // },
   insiders: {
     // Remove the `content` field
     'index.d.ts': typesInsiders.replace(
