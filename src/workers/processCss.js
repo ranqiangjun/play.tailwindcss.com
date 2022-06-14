@@ -23,6 +23,13 @@ const deps = {
     () => import('tailwindcss/lib/featureFlags'),
     () => import('tailwindcss/resolveConfig'),
   ],
+  insiders: [
+    () => import('tailwindcss-insiders'),
+    () => import('postcss'),
+    () => import('autoprefixer'),
+    () => import('tailwindcss-insiders/lib/featureFlags'),
+    () => import('tailwindcss-insiders/resolveConfig'),
+  ],
 }
 
 const applyModule1 = require('tailwindcss-v1/lib/flagged/applyComplexClasses')
@@ -63,6 +70,7 @@ export async function processCss(
   tailwindVersion = '2',
   skipIntelliSense = false
 ) {
+  let isV3 = tailwindVersion === '3' || tailwindVersion === 'insiders'
   let jit = false
   const config = klona(configInput)
   const [tailwindcss, postcss, autoprefixer, featureFlags, resolveConfig] = (
@@ -75,11 +83,8 @@ export async function processCss(
     typeof config.separator === 'undefined' ? ':' : config.separator
   separator = `${separator}`
 
-  if (
-    (tailwindVersion === '2' && config.mode === 'jit') ||
-    tailwindVersion === '3'
-  ) {
-    if (tailwindVersion === '3') {
+  if ((tailwindVersion === '2' && config.mode === 'jit') || isV3) {
+    if (isV3) {
       config.content = [VIRTUAL_HTML_FILENAME]
     } else {
       config.purge = [VIRTUAL_HTML_FILENAME]
@@ -92,10 +97,22 @@ export async function processCss(
 
   let jitContext
   if (jit && !skipIntelliSense) {
-    jitContext =
-      require('tailwindcss-v2/lib/jit/lib/setupContextUtils').createContext(
-        resolveConfig(config)
-      )
+    if (tailwindVersion === '2') {
+      jitContext =
+        require('tailwindcss-v2/lib/jit/lib/setupContextUtils').createContext(
+          resolveConfig(config)
+        )
+    } else if (tailwindVersion === 'insiders') {
+      jitContext =
+        require('tailwindcss-insiders/lib/lib/setupContextUtils').createContext(
+          resolveConfig(config)
+        )
+    } else {
+      jitContext =
+        require('tailwindcss/lib/lib/setupContextUtils').createContext(
+          resolveConfig(config)
+        )
+    }
   }
 
   const applyComplexClasses =
@@ -104,6 +121,12 @@ export async function processCss(
   applyComplexClasses.default = (config, ...args) => {
     if (tailwindVersion === '3') {
       return require('tailwindcss/lib/lib/expandApplyAtRules').default(
+        jitContext
+      )
+    }
+
+    if (tailwindVersion === 'insiders') {
+      return require('tailwindcss-insiders/lib/lib/expandApplyAtRules').default(
         jitContext
       )
     }
@@ -156,7 +179,7 @@ export async function processCss(
 
   function addLayerBoundaryComments(root) {
     let supportedLayers = ['base', 'components', 'utilities']
-    if (tailwindVersion !== '3') {
+    if (!isV3) {
       supportedLayers.push('screens')
     }
     root.walkAtRules(/(tailwind|layer)/, (atRule) => {
@@ -200,7 +223,7 @@ export async function processCss(
   if (!jit) {
     let result = await postcss(
       [
-        tailwindVersion !== '3' && addTailwindScreensDirective,
+        !isV3 && addTailwindScreensDirective,
         addLayerBoundaryComments,
         tailwindcss(config),
         autoprefixer(),
@@ -214,7 +237,7 @@ export async function processCss(
     css = (
       await postcss(
         [
-          tailwindVersion !== '3' && addTailwindScreensDirective,
+          !isV3 && addTailwindScreensDirective,
           addLayerBoundaryComments,
           tailwindcss(config),
           formatNodes,
@@ -226,7 +249,7 @@ export async function processCss(
       })
     ).css
 
-    if (!skipIntelliSense && tailwindVersion !== '3') {
+    if (!skipIntelliSense && !isV3) {
       lspRoot = (
         await postcss([
           tailwindcss({ ...config, mode: 'aot', purge: false, variants: [] }),
@@ -240,7 +263,7 @@ export async function processCss(
 
   let state
 
-  if (lspRoot || (tailwindVersion === '3' && !skipIntelliSense)) {
+  if (lspRoot || (isV3 && !skipIntelliSense)) {
     state = {}
     state.jit = jit
     if (lspRoot) {

@@ -14,9 +14,12 @@ export function getVariants(state) {
     // [name, [[sort, fn]]]
     Array.from(state.jitContext.variantMap).forEach(
       ([variantName, variantFnOrFns]) => {
-        let fns = (Array.isArray(variantFnOrFns[0])
-          ? variantFnOrFns
-          : [variantFnOrFns]
+        if (variantName.startsWith('[') && variantName.endsWith(']')) {
+          return
+        }
+
+        let fns = (
+          Array.isArray(variantFnOrFns[0]) ? variantFnOrFns : [variantFnOrFns]
         ).map(([_sort, fn]) => fn)
 
         let placeholder = '__variant_placeholder__'

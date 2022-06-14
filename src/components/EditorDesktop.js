@@ -188,7 +188,7 @@ export default function Editor({
             />
             <CopyButton
               editorRef={editorRef}
-              className="absolute top-2.5 right-[calc(14px+0.625rem)]"
+              className="absolute bottom-4 right-[calc(14px+0.625rem)]"
               isVisible={isCopyButtonVisible}
             />
           </div>
@@ -275,17 +275,17 @@ export default function Editor({
                   </button>
                 ))}
               </div>
-              <CopyButton
-                editorRef={cssOutputEditorRef}
-                className="relative"
-                isVisible={isCssOutputCopyButtonVisible}
-              />
             </div>
             <div
               ref={cssOutputEditorContainerRef}
               className="absolute inset-0 w-full h-full css-output-editor"
             />
           </div>
+          <CopyButton
+            editorRef={cssOutputEditorRef}
+            className="absolute bottom-4 right-[calc(14px+0.625rem)]"
+            isVisible={isCssOutputCopyButtonVisible}
+          />
         </div>
       </SplitPane>
     </div>

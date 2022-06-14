@@ -7,9 +7,10 @@ import tailwind3 from 'tailwindcss/package.json?fields=version'
 import { Listbox } from '@headlessui/react'
 
 const versions = {
-  1: tailwind1.version,
-  2: tailwind2.version,
-  3: tailwind3.version,
+  // insiders: 'Insiders',
+  1: `v${tailwind1.version}`,
+  2: `v${tailwind2.version}`,
+  3: `v${tailwind3.version}`,
 }
 
 export function Header({
@@ -168,7 +169,7 @@ function VersionSwitcher({ value, onChange }) {
   return (
     <Listbox value={value} onChange={onChange} as="div" className="relative">
       <Listbox.Button className="text-gray-500 text-xs leading-5 font-semibold bg-gray-400/10 rounded-full py-1 px-3 flex items-center hover:bg-gray-400/20 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:shadow-highlight/4">
-        v{versions[value]}
+        {versions[value]}
         <svg
           width="6"
           height="3"
@@ -188,7 +189,7 @@ function VersionSwitcher({ value, onChange }) {
       <div className="absolute top-full right-0 mt-2 rounded-lg shadow-lg">
         <Listbox.Options className="overflow-hidden py-1 w-44 rounded-lg bg-white ring-1 ring-gray-900/10 text-sm leading-6 font-semibold text-gray-700 space-y-1 dark:bg-gray-800 dark:ring-0 dark:text-gray-300 dark:shadow-highlight/4">
           {Object.entries(versions)
-            .sort((a, z) => parseInt(z, 10) - parseInt(a, 10))
+            .sort(([a], [z]) => parseInt(z, 10) - parseInt(a, 10))
             .map(([version, fullVersion]) => (
               <Listbox.Option
                 key={version}
@@ -204,7 +205,7 @@ function VersionSwitcher({ value, onChange }) {
               >
                 {({ selected }) => (
                   <>
-                    v{fullVersion}
+                    {fullVersion}
                     {selected && (
                       <svg width="24" height="24" fill="none">
                         <path

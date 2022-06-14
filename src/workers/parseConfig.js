@@ -5,6 +5,7 @@ import colors3 from 'tailwindcss/colors'
 let colors = {
   2: colors2,
   3: colors3,
+  insiders: colors3,
 }
 
 export async function parseConfig(configStr, tailwindVersion) {
@@ -53,7 +54,7 @@ export async function parseConfig(configStr, tailwindVersion) {
       let result
       try {
         const href = builtinPlugins[m]
-          ? '/plugins/' + builtinPlugins._builderVersion + '/v' + builtinPlugins._tailwindVersion + '/' + m + '@' + builtinPlugins[m].version + '.js'
+          ? '/plugins/' + builtinPlugins._builderVersion + '/' + builtinPlugins._tailwindVersion + '/' + m + '@' + builtinPlugins[m].version + '.js'
           : 'https://cdn.skypack.dev/' + m + '?min'
         result = await self.importShim(href)
       } catch (error) {

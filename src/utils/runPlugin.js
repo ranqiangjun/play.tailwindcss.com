@@ -5,9 +5,11 @@ export function runPlugin(plugin, state, overrides) {
     ;(plugin.handler || plugin)({
       addUtilities: () => {},
       addComponents: () => {},
+      matchComponents: () => {},
       addBase: () => {},
       matchUtilities: () => {},
       addVariant: () => {},
+      matchVariant: () => {},
       e: (x) => x,
       prefix: (x) => x,
       theme: (path, defaultValue) =>

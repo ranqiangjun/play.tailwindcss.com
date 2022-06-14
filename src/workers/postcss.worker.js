@@ -28,6 +28,35 @@ import { toValidTailwindVersion } from '../utils/toValidTailwindVersion'
 import { isObject } from '../utils/object'
 import { format } from '../monaco/format'
 
+const deps = {
+  generateRules: {
+    2: () => import('tailwindcss-v2/lib/jit/lib/generateRules'),
+    3: () => import('tailwindcss/lib/lib/generateRules'),
+    insiders: () => import('tailwindcss-insiders/lib/lib/generateRules'),
+  },
+  setupContextUtils: {
+    2: () => import('tailwindcss-v2/lib/jit/lib/setupContextUtils'),
+    3: () => import('tailwindcss/lib/lib/setupContextUtils'),
+    insiders: () => import('tailwindcss-insiders/lib/lib/setupContextUtils'),
+  },
+  expandApplyAtRules: {
+    2: () => import('tailwindcss-v2/lib/jit/lib/expandApplyAtRules'),
+    3: () => import('tailwindcss/lib/lib/expandApplyAtRules'),
+    insiders: () => import('tailwindcss-insiders/lib/lib/expandApplyAtRules'),
+  },
+  resolveConfig: {
+    1: () => import('tailwindcss-v1/resolveConfig'),
+    2: () => import('tailwindcss-v2/resolveConfig'),
+    3: () => import('tailwindcss/resolveConfig'),
+    insiders: () => import('tailwindcss-insiders/resolveConfig'),
+  },
+  setupTrackingContext: {
+    2: () => import('tailwindcss-v2/lib/jit/lib/setupTrackingContext'),
+    3: () => import('tailwindcss/lib/lib/setupTrackingContext'),
+    insiders: () => import('tailwindcss-insiders/lib/lib/setupTrackingContext'),
+  },
+}
+
 const compileWorker = createWorkerQueue(CompileWorker)
 
 let state
@@ -189,30 +218,16 @@ addEventListener('message', async (event) => {
         ] = await Promise.all([
           import('postcss'),
           import('postcss-selector-parser'),
+          result.state.jit ? deps.generateRules[tailwindVersion]?.() ?? {} : {},
           result.state.jit
-            ? tailwindVersion === '2'
-              ? import('tailwindcss-v2/lib/jit/lib/generateRules')
-              : import('tailwindcss/lib/lib/generateRules')
+            ? deps.setupContextUtils[tailwindVersion]?.() ?? {}
             : {},
           result.state.jit
-            ? tailwindVersion === '2'
-              ? import('tailwindcss-v2/lib/jit/lib/setupContextUtils')
-              : import('tailwindcss/lib/lib/setupContextUtils')
+            ? deps.expandApplyAtRules[tailwindVersion]?.() ?? {}
             : {},
+          deps.resolveConfig[tailwindVersion]?.() ?? {},
           result.state.jit
-            ? tailwindVersion === '2'
-              ? import('tailwindcss-v2/lib/jit/lib/expandApplyAtRules')
-              : import('tailwindcss/lib/lib/expandApplyAtRules')
-            : {},
-          tailwindVersion === '2'
-            ? import('tailwindcss-v2/resolveConfig')
-            : tailwindVersion === '3'
-            ? import('tailwindcss/resolveConfig')
-            : import('tailwindcss-v1/resolveConfig'),
-          result.state.jit
-            ? tailwindVersion === '2'
-              ? import('tailwindcss-v2/lib/jit/lib/setupTrackingContext')
-              : import('tailwindcss/lib/lib/setupTrackingContext')
+            ? deps.setupTrackingContext[tailwindVersion]?.() ?? {}
             : {},
         ])
 

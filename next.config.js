@@ -160,6 +160,11 @@ module.exports = {
       use: [createReadFileReplaceLoader(3)],
     })
 
+    config.module.rules.push({
+      test: /tailwindcss-insiders\/lib\/corePlugins\.js/,
+      use: [createReadFileReplaceLoader(3)],
+    })
+
     config.plugins.push(
       new webpack.DefinePlugin({
         'process.env.TAILWIND_MODE': JSON.stringify('build'),
