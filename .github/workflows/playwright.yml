@@ -16,8 +16,8 @@ jobs:
         id: waitForVercelPreviewDeployment
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          max_timeout: 600
-          check_interval: 10
+          max_timeout: 1000
+          check_interval: 20
   test:
     needs: test_setup
     name: Playwright tests
