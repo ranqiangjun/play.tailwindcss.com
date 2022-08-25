@@ -1,5 +1,8 @@
 const { test, expect } = require('@playwright/test')
 const utils = require('./utils')
+const {
+  version: insidersVersion,
+} = require('tailwindcss-insiders/package.json')
 
 test.describe.configure({ mode: 'parallel' })
 
@@ -157,4 +160,14 @@ test('should tidy config', async ({ page, browserName }) => {
 }
 `
   )
+})
+
+test.only('should support insiders', async ({ page, browserName }) => {
+  await page.goto('/')
+  await utils.initialBuild(page)
+
+  await page.click('[data-test=version]')
+  await page.click('[data-test=version-insiders]')
+
+  await utils.initialBuild(page, insidersVersion)
 })

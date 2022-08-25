@@ -168,7 +168,10 @@ function HeaderButton({
 function VersionSwitcher({ value, onChange }) {
   return (
     <Listbox value={value} onChange={onChange} as="div" className="relative">
-      <Listbox.Button className="text-gray-500 text-xs leading-5 font-semibold bg-gray-400/10 rounded-full py-1 px-3 flex items-center hover:bg-gray-400/20 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:shadow-highlight/4">
+      <Listbox.Button
+        data-test="version"
+        className="text-gray-500 text-xs leading-5 font-semibold bg-gray-400/10 rounded-full py-1 px-3 flex items-center hover:bg-gray-400/20 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:shadow-highlight/4"
+      >
         {versions[value]}
         <svg
           width="6"
@@ -194,6 +197,7 @@ function VersionSwitcher({ value, onChange }) {
               <Listbox.Option
                 key={version}
                 value={version}
+                data-test={`version-${version}`}
                 className={({ selected, active }) =>
                   clsx(
                     'flex items-center justify-between px-3 py-1 cursor-pointer',

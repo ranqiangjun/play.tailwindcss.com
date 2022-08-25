@@ -1,9 +1,17 @@
 const { expect } = require('@playwright/test')
 
-module.exports.initialBuild = async function initialBuild(page) {
+module.exports.initialBuild = async function initialBuild(
+  page,
+  expectedVersion
+) {
   let iframe = page.frameLocator('iframe')
   let stylesheet = iframe.locator('#_style')
-  await expect(stylesheet).toContainText('/* ! tailwindcss v', {
+  let expectedText = '/* ! tailwindcss v'
+  if (expectedVersion) {
+    expectedText += expectedVersion
+  }
+  console.log({ expectedText })
+  await expect(stylesheet).toContainText(expectedText, {
     timeout: 12000,
   })
   return { iframe }
