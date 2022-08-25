@@ -10,7 +10,6 @@ module.exports.initialBuild = async function initialBuild(
   if (expectedVersion) {
     expectedText += expectedVersion
   }
-  console.log({ expectedText })
   await expect(stylesheet).toContainText(expectedText, {
     timeout: 12000,
   })
