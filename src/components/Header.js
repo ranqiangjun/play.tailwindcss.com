@@ -4,13 +4,14 @@ import { toggleTheme } from '../utils/theme'
 import tailwind1 from 'tailwindcss-v1/package.json?fields=version'
 import tailwind2 from 'tailwindcss-v2/package.json?fields=version'
 import tailwind3 from 'tailwindcss/package.json?fields=version'
+import tailwindInsiders from 'tailwindcss-insiders/package.json?fields=version'
 import { Listbox } from '@headlessui/react'
 
 const versions = {
-  insiders: 'Insiders',
-  1: `v${tailwind1.version}`,
-  2: `v${tailwind2.version}`,
-  3: `v${tailwind3.version}`,
+  insiders: ['Insiders', tailwindInsiders.version.split('.').pop()],
+  1: [`v${tailwind1.version}`],
+  2: [`v${tailwind2.version}`],
+  3: [`v${tailwind3.version}`],
 }
 
 export function Header({
@@ -172,7 +173,7 @@ function VersionSwitcher({ value, onChange }) {
         data-test="version"
         className="text-gray-500 text-xs leading-5 font-semibold bg-gray-400/10 rounded-full py-1 px-3 flex items-center hover:bg-gray-400/20 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:shadow-highlight/4"
       >
-        {versions[value]}
+        {versions[value][0]}
         <svg
           width="6"
           height="3"
@@ -193,7 +194,7 @@ function VersionSwitcher({ value, onChange }) {
         <Listbox.Options className="overflow-hidden py-1 w-44 rounded-lg bg-white ring-1 ring-gray-900/10 text-sm leading-6 font-semibold text-gray-700 space-y-1 dark:bg-gray-800 dark:ring-0 dark:text-gray-300 dark:shadow-highlight/4">
           {Object.entries(versions)
             .sort(([a], [z]) => parseInt(z, 10) - parseInt(a, 10))
-            .map(([version, fullVersion]) => (
+            .map(([version, [label, subLabel]]) => (
               <Listbox.Option
                 key={version}
                 value={version}
@@ -207,9 +208,23 @@ function VersionSwitcher({ value, onChange }) {
                   )
                 }
               >
-                {({ selected }) => (
+                {({ active, selected }) => (
                   <>
-                    {fullVersion}
+                    <span>
+                      {label}
+                      {subLabel && (
+                        <span
+                          className={clsx(
+                            'text-xs',
+                            selected
+                              ? 'text-inherit'
+                              : active
+                              ? 'text-gray-700 dark:text-gray-200'
+                              : 'text-gray-500 dark:text-gray-400'
+                          )}
+                        >{` (${subLabel})`}</span>
+                      )}
+                    </span>
                     {selected && (
                       <svg width="24" height="24" fill="none">
                         <path
