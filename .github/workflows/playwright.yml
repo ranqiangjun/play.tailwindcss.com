@@ -14,8 +14,13 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '15'
-      - run: rm package.json
-      - run: npm install @playwright/test
+      - uses: actions/cache@v3
+        id: npm-cache
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+      - if: steps.npm-cache.outputs.cache-hit != 'true'
+        run: npm install
       - run: npx playwright install-deps webkit chromium
       - name: Get installed Playwright version
         id: playwright-version
@@ -35,6 +40,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           max_timeout: 1000
           check_interval: 20
-      - run: npx playwright test
+      - run: npm test
         env:
           PLAYWRIGHT_BASE_URL: ${{ steps.vercel.outputs.url }}
