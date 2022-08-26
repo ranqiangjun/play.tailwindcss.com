@@ -60,6 +60,14 @@ const files = [
       'node_modules/tailwindcss/lib/css/preflight.css'
     ),
   },
+  {
+    pattern: /preflight/,
+    tailwindVersion: 'insiders',
+    file: path.resolve(
+      __dirname,
+      'node_modules/tailwindcss-insiders/lib/css/preflight.css'
+    ),
+  },
 ]
 
 function createReadFileReplaceLoader(tailwindVersion) {
@@ -162,7 +170,7 @@ module.exports = {
 
     config.module.rules.push({
       test: /tailwindcss-insiders\/lib\/corePlugins\.js/,
-      use: [createReadFileReplaceLoader(3)],
+      use: [createReadFileReplaceLoader('insiders')],
     })
 
     config.plugins.push(
