@@ -6,7 +6,6 @@ import tailwind2 from 'tailwindcss-v2/package.json?fields=version'
 import tailwind3 from 'tailwindcss/package.json?fields=version'
 import tailwindInsiders from 'tailwindcss-insiders/package.json?fields=version'
 import { Listbox } from '@headlessui/react'
-import { useEffect, useState } from 'react'
 
 const versions = {
   insiders: ['Insiders', tailwindInsiders.version.split('.').pop()],
