@@ -162,7 +162,7 @@ test('should tidy config', async ({ page, browserName }) => {
   )
 })
 
-test.only('should support insiders', async ({ page, browserName }) => {
+test('should support insiders', async ({ page, browserName }) => {
   await page.goto('/')
   await utils.initialBuild(page)
 
