@@ -167,84 +167,6 @@ function HeaderButton({
   )
 }
 
-function InsidersWarning({ enabled }) {
-  let [open, setOpen] = useState()
-  let [shouldClose, setShouldClose] = useState(false)
-
-  if (!enabled && open) {
-    setOpen(false)
-  }
-
-  useEffect(() => {
-    if (!shouldClose) return
-
-    let handle = window.setTimeout(() => {
-      setOpen(false)
-    }, 500)
-
-    return () => {
-      window.clearTimeout(handle)
-    }
-  }, [shouldClose])
-
-  useEffect(() => {
-    if (!open) return
-
-    function onKeyDown(event) {
-      if (event.key === 'Escape') {
-        setOpen(false)
-      }
-    }
-
-    window.addEventListener('keydown', onKeyDown)
-
-    return () => {
-      window.removeEventListener('keydown', onKeyDown)
-    }
-  }, [open])
-
-  return (
-    <div
-      className="relative"
-      onMouseEnter={() => {
-        setOpen(true)
-        setShouldClose(false)
-      }}
-      onMouseLeave={() => setShouldClose(true)}
-    >
-      <div
-        tabIndex={0}
-        onFocus={() => setOpen(true)}
-        onBlur={() => setOpen(false)}
-        aria-label="Warning"
-        {...(open ? { 'aria-describedby': 'insiders-warning' } : {})}
-        className="p-1.5"
-      >
-        <svg
-          viewBox="0 0 20 20"
-          className="w-4 h-4 fill-gray-400"
-          aria-hidden="true"
-        >
-          <path
-            fillRule="evenodd"
-            d="M8.485 3.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 3.495zM10 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 6zm0 9a1 1 0 100-2 1 1 0 000 2z"
-            clipRule="evenodd"
-          />
-        </svg>
-      </div>
-      {open && (
-        <div
-          id="insiders-warning"
-          role="tooltip"
-          className="absolute text-gray-700 top-full mt-2 shadow-lg left-1/2 -ml-28 w-56 p-3 text-xs rounded-lg bg-white ring-1 ring-gray-900/10 dark:text-gray-300 dark:ring-0 dark:bg-gray-800 dark:shadow-highlight/4"
-        >
-          Some message here about using the insiders version
-        </div>
-      )}
-    </div>
-  )
-}
-
 function VersionSwitcher({ value, onChange }) {
   return (
     <Listbox
@@ -253,84 +175,122 @@ function VersionSwitcher({ value, onChange }) {
       as="div"
       className="relative flex items-center gap-1"
     >
-      {({ open }) => (
-        <>
-          {value === 'insiders' && <InsidersWarning enabled={!open} />}
-          <Listbox.Button
-            data-test="version"
-            className="text-gray-500 text-xs leading-5 font-semibold bg-gray-400/10 rounded-full py-1 px-3 flex items-center hover:bg-gray-400/20 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:shadow-highlight/4"
+      <Listbox.Button
+        data-test="version"
+        className="text-gray-500 text-xs leading-5 font-semibold bg-gray-400/10 rounded-full py-1 px-3 flex items-center hover:bg-gray-400/20 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:shadow-highlight/4"
+      >
+        {value === 'insiders' && (
+          <svg
+            viewBox="0 0 20 20"
+            className="w-4 h-4 fill-gray-400 dark:fill-gray-500 mr-1.5"
+            aria-hidden="true"
           >
-            {versions[value][0]}
-            <svg
-              width="6"
-              height="3"
-              className="ml-2 overflow-visible"
-              aria-hidden="true"
-            >
-              <path
-                d="M0 0L3 3L6 0"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </Listbox.Button>
-          <div className="absolute top-full right-0 mt-2 rounded-lg shadow-lg">
-            <Listbox.Options className="overflow-hidden py-1 w-44 rounded-lg bg-white ring-1 ring-gray-900/10 text-sm leading-6 font-semibold text-gray-700 space-y-1 dark:bg-gray-800 dark:ring-0 dark:text-gray-300 dark:shadow-highlight/4">
-              {Object.entries(versions)
-                .sort(([a], [z]) => parseInt(z, 10) - parseInt(a, 10))
-                .map(([version, [label, subLabel]]) => (
-                  <Listbox.Option
-                    key={version}
-                    value={version}
-                    data-test={`version-${version}`}
-                    className={({ selected, active }) =>
-                      clsx(
-                        'flex items-center justify-between px-3 py-1 cursor-pointer',
-                        active && !selected && 'text-gray-900 dark:text-white',
-                        active && 'bg-gray-50 dark:bg-gray-600/30',
-                        selected && 'text-sky-500 dark:text-sky-400'
-                      )
-                    }
-                  >
-                    {({ active, selected }) => (
-                      <>
-                        <span>
-                          {label}
-                          {subLabel && (
-                            <span
-                              className={clsx(
-                                'text-xs',
-                                selected
-                                  ? 'text-inherit'
-                                  : active
-                                  ? 'text-gray-700 dark:text-gray-200'
-                                  : 'text-gray-500 dark:text-gray-400'
-                              )}
-                            >{` (${subLabel})`}</span>
-                          )}
-                        </span>
-                        {selected && (
-                          <svg width="24" height="24" fill="none">
-                            <path
-                              d="m6 13 4 4 8-10"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        )}
-                      </>
+            <path
+              fillRule="evenodd"
+              d="M8.485 3.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 3.495zM10 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 6zm0 9a1 1 0 100-2 1 1 0 000 2z"
+              clipRule="evenodd"
+            />
+          </svg>
+        )}
+        {versions[value][0]}
+        <svg
+          width="6"
+          height="3"
+          className="ml-2 overflow-visible"
+          aria-hidden="true"
+        >
+          <path
+            d="M0 0L3 3L6 0"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </Listbox.Button>
+      <div className="absolute top-full right-0 mt-2 rounded-lg shadow-lg">
+        <Listbox.Options className="overflow-hidden py-1 w-52 rounded-lg bg-white ring-1 ring-gray-900/10 text-sm leading-6 font-semibold text-gray-700 dark:bg-gray-800 dark:ring-0 dark:text-gray-300 dark:shadow-highlight/4">
+          {Object.entries(versions)
+            .sort(([a], [z]) => parseInt(z, 10) - parseInt(a, 10))
+            .map(([version, [label, subLabel]], versionIndex) => (
+              <Listbox.Option
+                key={version}
+                value={version}
+                data-test={`version-${version}`}
+                className={({ active, selected }) =>
+                  clsx(
+                    'cursor-pointer',
+                    versionIndex > 0 && version !== 'insiders' && 'mt-1',
+                    active && !selected && 'text-gray-900 dark:text-white',
+                    version === 'insiders' &&
+                      'mt-[calc(theme(spacing.2)+1px)] relative before:absolute before:bottom-full before:mb-1 before:inset-x-0 before:h-px before:bg-gray-100 dark:before:bg-gray-600/30 before:pointer-events-none'
+                  )
+                }
+              >
+                {({ active, selected }) => (
+                  <div
+                    className={clsx(
+                      'px-3',
+                      active && 'bg-gray-50 dark:bg-gray-600/30',
+                      version === 'insiders' ? 'pt-1 pb-2' : 'py-1'
                     )}
-                  </Listbox.Option>
-                ))}
-            </Listbox.Options>
-          </div>
-        </>
-      )}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div
+                        className={clsx(
+                          selected && 'text-sky-500 dark:text-sky-400'
+                        )}
+                      >
+                        {label}
+                        {subLabel && (
+                          <span
+                            className={clsx(
+                              'text-xs',
+                              selected
+                                ? 'text-inherit'
+                                : active
+                                ? 'text-gray-700 dark:text-gray-200'
+                                : 'text-gray-500 dark:text-gray-400'
+                            )}
+                          >{` (${subLabel})`}</span>
+                        )}
+                      </div>
+                      {selected && (
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          aria-hidden="true"
+                          className="w-6 h-6 stroke-sky-500 dark:stroke-sky-400"
+                        >
+                          <path
+                            d="m6 13 4 4 8-10"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      )}
+                    </div>
+                    {version === 'insiders' && (
+                      <div
+                        className={clsx(
+                          'font-normal text-xs block mt-0.5',
+                          active
+                            ? 'text-gray-600 dark:text-gray-300'
+                            : 'dark:text-gray-400 text-gray-500'
+                        )}
+                      >
+                        Insiders builds are unstable, and your demo may break
+                        when a new build is released.
+                      </div>
+                    )}
+                  </div>
+                )}
+              </Listbox.Option>
+            ))}
+        </Listbox.Options>
+      </div>
     </Listbox>
   )
 }
