@@ -33,13 +33,17 @@ jobs:
       - name: Install Playwright's dependencies
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install webkit chromium
-      - name: Wait for Vercel preview deployment to be ready
-        uses: patrickedqvist/wait-for-vercel-preview@v1.2.0
-        id: vercel
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          max_timeout: 1000
-          check_interval: 20
+      # - name: Wait for Vercel preview deployment to be ready
+      #   uses: patrickedqvist/wait-for-vercel-preview@v1.2.0
+      #   id: vercel
+      #   with:
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     max_timeout: 1000
+      #     check_interval: 20
       - run: npm test
         env:
-          PLAYWRIGHT_BASE_URL: ${{ steps.vercel.outputs.url }}
+          # PLAYWRIGHT_BASE_URL: ${{ steps.vercel.outputs.url }}
+          PLAYWRIGHT_BASE_URL: 'https://play-tailwindcss-mf85nq7u2-tailwindlabs.vercel.app/'
+      - uses: actions/upload-artifact@v3
+        with:
+          path: screenshot.png

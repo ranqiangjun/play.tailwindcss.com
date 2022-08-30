@@ -52,17 +52,21 @@ test('should update the preview when editing HTML', async ({ page }) => {
   )
 })
 
-test('should update the preview when editing CSS', async ({ page }) => {
+test.only('should update the preview when editing CSS', async ({ page }) => {
   await page.goto('/')
 
   let { iframe } = await utils.initialBuild(page)
 
   await utils.editTab(page, 'CSS', 'body { background: red; }')
 
-  await expect(iframe.locator('body')).toHaveCSS(
-    'background-color',
-    'rgb(255, 0, 0)'
-  )
+  await page.waitForTimeout(2000)
+
+  await page.screenshot({ path: 'screenshot.png' })
+
+  // await expect(iframe.locator('body')).toHaveCSS(
+  //   'background-color',
+  //   'rgb(255, 0, 0)'
+  // )
 })
 
 test('should update the preview when editing config', async ({ page }) => {
