@@ -40,10 +40,10 @@ jobs:
       #     token: ${{ secrets.GITHUB_TOKEN }}
       #     max_timeout: 1000
       #     check_interval: 20
-      - run: npm test
+      - run: npm test -- --project=webkit
         env:
           # PLAYWRIGHT_BASE_URL: ${{ steps.vercel.outputs.url }}
-          PLAYWRIGHT_BASE_URL: 'https://play-tailwindcss-mf85nq7u2-tailwindlabs.vercel.app/'
+          PLAYWRIGHT_BASE_URL: 'https://play-tailwindcss-nr9td9j47-tailwindlabs.vercel.app/'
       - uses: actions/upload-artifact@v3
         with:
           path: screenshot.png

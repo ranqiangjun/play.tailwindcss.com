@@ -59,7 +59,7 @@ test.only('should update the preview when editing CSS', async ({ page }) => {
 
   await utils.editTab(page, 'CSS', 'body { background: red; }')
 
-  await page.waitForTimeout(2000)
+  await page.waitForTimeout(5000)
 
   await page.screenshot({ path: 'screenshot.png' })
 
