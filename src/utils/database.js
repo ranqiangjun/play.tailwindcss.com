@@ -1,6 +1,6 @@
 export function put(item) {
   return new Promise((resolve, reject) => {
-    fetch(process.env.TW_API_URL + '/api/playgrounds/', {
+    fetch(process.env.TW_API_URL + '/api/playgrounds', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
